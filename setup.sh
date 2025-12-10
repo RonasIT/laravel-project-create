@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-if command -v git &>/dev/null; then
+if command -v git &>/dev/null && git rev-parse --is-inside-work-tree &>/dev/null; then
     git remote get-url origin &>/dev/null && git remote remove origin
 
     new_commit=$(git commit-tree HEAD^{tree} -m "chore: initial commit")
@@ -50,4 +50,4 @@ else
     exit 1
 fi
 
-rm -- "$(realpath "$0")"
+rm -- "$(realpath "${BASH_SOURCE[0]}")"

@@ -46,4 +46,4 @@ chmod +x "$ENTRYPOINT_FILE"
 
 echo "Setup complete!"
 
-rm -- "$(realpath "$0")"
+rm -- "$(realpath "${BASH_SOURCE[0]}")"
