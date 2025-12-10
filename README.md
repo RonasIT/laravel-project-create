@@ -9,14 +9,16 @@ A minimal Laravel environment fully containerized with Docker, ready for develop
 
 ### Download the repository using `curl` or `git`:
 
+Option 1. Download via `curl`:
 ```bash
-# Option 1. Download via curl
 curl -L -o create-project.zip https://github.com/RonasIT/laravel-project-create/archive/refs/heads/main.zip &&
 unzip create-project.zip &&
 rm create-project.zip &&
 cd laravel-project-create-main
+```
 
-# Option 2. Clone via git
+Option 2. Clone via `git`:
+```bash
 git clone git@github.com:RonasIT/laravel-project-create.git NEW-PROJECT-NAME && cd NEW-PROJECT-NAME
 ```
 
