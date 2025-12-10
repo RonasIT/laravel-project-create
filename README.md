@@ -22,6 +22,8 @@ git clone git@github.com:RonasIT/laravel-project-create.git NEW-PROJECT-NAME && 
 
 ### Setup and Initialize Project
 
+Before running, make sure you don’t have other Docker containers running.
+
 ```bash
 ./setup.sh
 ```

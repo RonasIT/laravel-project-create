@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-if command -v git &>/dev/null then
+if command -v git &>/dev/null; then
     git remote get-url origin &>/dev/null && git remote remove origin
 
     new_commit=$(git commit-tree HEAD^{tree} -m "chore: initial commit")
@@ -9,7 +9,7 @@ if command -v git &>/dev/null then
 
     git commit --amend -m "chore: initial commit" &>/dev/null
 
-    read -rp "Do you want to add a remote Git repository? [y/N]: " add_remote
+    read -rp "Do you want to add a remote Git repository? [Y/N]: " add_remote
     add_remote=${add_remote,,}
 
     if [[ "$add_remote" == "y" || "$add_remote" == "yes" ]]; then
@@ -36,7 +36,7 @@ if command -v git &>/dev/null then
             fi
 
             git remote add origin "$repo_url"
-            echo "Added new remote 'origin' → $repo_url"
+            echo "Added new remote 'origin' $repo_url"
             break
         done
     fi
