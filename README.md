@@ -11,9 +11,9 @@ A minimal Laravel environment fully containerized with Docker, ready for develop
 
 Option 1. Download via `curl`:
 ```bash
-curl -L -o main.zip https://github.com/RonasIT/laravel-project-create/archive/refs/heads/main.zip &&
-unzip main.zip &&
-rm main.zip &&
+curl -L -o laravel-project-create.zip https://github.com/RonasIT/laravel-project-create/archive/refs/heads/main.zip &&
+unzip laravel-project-create.zip &&
+rm laravel-project-create.zip &&
 cd laravel-project-create-main
 ```
 
