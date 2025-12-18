@@ -7,6 +7,10 @@ download_file() {
     local output=$1
     local url=$2
 
+    if [ -f "$output" ]; then
+        return
+    fi
+
     if curl -L -o "$output" "$url"; then
         chmod +x "$output"
     else
