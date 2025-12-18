@@ -1,6 +1,24 @@
 #!/bin/bash
 set -e
 
+mkdir -p docker
+
+download_file() {
+    local output=$1
+    local url=$2
+
+    if curl -L -o "$output" "$url"; then
+        chmod +x "$output"
+    else
+        echo "Failed to download $output" >&2
+    fi
+}
+
+download_file "init-project.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/init-project.sh"
+download_file "docker-compose.yml" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker-compose.yml"
+download_file "Dockerfile" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/Dockerfile"
+download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh"
+
 if command -v git &>/dev/null && git rev-parse --is-inside-work-tree &>/dev/null; then
     git remote get-url origin &>/dev/null && git remote remove origin
 
