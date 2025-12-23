@@ -14,6 +14,9 @@ Option 1. Download via `curl`:
 curl -L -o setup.sh https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/setup.sh && chmod +x setup.sh
 ```
 
+The `setup.sh` script is a bootstrapper: when you run it, it will automatically download the additional project files
+(`init-project.sh`, `docker-compose.yml`, `Dockerfile`, and `docker/entrypoint.sh`) into your project directory. You do not
+need to download these files manually.
 Option 2. Clone via `git`:
 ```bash
 git clone git@github.com:RonasIT/laravel-project-create.git NEW-PROJECT-NAME && cd NEW-PROJECT-NAME
