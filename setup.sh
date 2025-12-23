@@ -6,22 +6,25 @@ mkdir -p docker
 download_file() {
     local output=$1
     local url=$2
+    local make_executable=${3:-false}
 
     if [ -f "$output" ]; then
         return
     fi
 
     if curl -L -o "$output" "$url"; then
-        chmod +x "$output"
+        if [ "$make_executable" = "true" ]; then
+            chmod +x "$output"
+        fi
     else
         echo "Failed to download $output" >&2
     fi
 }
 
-download_file "init-project.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/init-project.sh"
-download_file "docker-compose.yml" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker-compose.yml"
-download_file "Dockerfile" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/Dockerfile"
-download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh"
+download_file "init-project.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/init-project.sh" true
+download_file "docker-compose.yml" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker-compose.yml" false
+download_file "Dockerfile" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/Dockerfile" false
+download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh" true
 
 if command -v git &>/dev/null && git rev-parse --is-inside-work-tree &>/dev/null; then
     git remote get-url origin &>/dev/null && git remote remove origin
