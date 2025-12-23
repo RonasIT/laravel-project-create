@@ -3,13 +3,15 @@
 A minimal Laravel environment fully containerized with Docker, ready for development.
 
 ## Requirements
+
 - Docker
+- cURL
 
 ## Quick Start
 
 ### Download bootstrapper:
 
-**Option 1**. Using `curl`:
+**Option 1**. Using `cURL`:
 
 ```bash
 curl -L -o setup.sh https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/setup.sh && chmod +x setup.sh
@@ -19,7 +21,7 @@ The `setup.sh` script is a bootstrapper: when you run it, it will automatically 
 (`init-project.sh`, `docker-compose.yml`, `Dockerfile`, and `docker/entrypoint.sh`) into your project directory. You do not
 need to download these files manually.
 
-**Option 2**. Using `git`:
+**Option 2**. Using `Git`:
 
 ```bash
 git clone git@github.com:RonasIT/laravel-project-create.git NEW-PROJECT-NAME && cd NEW-PROJECT-NAME
@@ -33,4 +35,4 @@ Before running, make sure you don’t have other Docker containers running.
 ./setup.sh
 ```
 
-### Laravel project is ready for development!
+**Laravel project is ready for development!**
