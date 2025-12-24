@@ -14,7 +14,7 @@ A minimal Laravel environment fully containerized with Docker, ready for develop
 First, create a directory for your new project and move into it:
 
 ```bash
-mkdir laravel-project && cd laravel-project
+mkdir NEW-PROJECT-NAME && cd NEW-PROJECT-NAME
 ```
 
 ### Download and run the bootstrapper:
@@ -32,7 +32,7 @@ need to download these files manually.
 **Option 2**. Using `Git`:
 
 ```bash
-git clone git@github.com:RonasIT/laravel-project-create.git NEW-PROJECT-NAME && cd NEW-PROJECT-NAME
+git clone git@github.com:RonasIT/laravel-project-create.git NEW-PROJECT-NAME && cd NEW-PROJECT-NAME && ./setup.sh
 ```
 
 Clone the repository and run the bootstrapper script.
