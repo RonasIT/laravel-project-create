@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+RED='\033[1;31m'
+RESET='\033[0m'
+
 mkdir -p docker
 
 download_file() {
@@ -17,7 +20,7 @@ download_file() {
             chmod +x "$output"
         fi
     else
-        echo "Failed to download $output" >&2
+        echo "${RED}Failed to download $output${RESET}" >&2
     fi
 }
 
@@ -71,7 +74,7 @@ if command -v docker &>/dev/null; then
     docker compose up -d
     docker compose exec -it nginx bash /app/init-project.sh
 else
-    echo "Error: Docker is not installed. Cannot start containers."
+    echo "${RED}Error: Docker is not installed. Cannot start containers.${RESET}" >&2
     exit 1
 fi
 
