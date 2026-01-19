@@ -74,7 +74,7 @@ if command -v docker &>/dev/null && docker info &>/dev/null; then
     docker compose up -d
     docker compose exec -it nginx bash /app/init-project.sh
 else
-    echo -e "${RED}Error: Docker is not installed or not running.${RESET}" >&2
+    echo "${RED}Error: Docker is not installed or not running.${RESET}" >&2
     exit 1
 fi
 
