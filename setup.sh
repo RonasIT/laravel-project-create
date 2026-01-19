@@ -70,11 +70,11 @@ if command -v git &>/dev/null && git rev-parse --is-inside-work-tree &>/dev/null
     fi
 fi
 
-if command -v docker &>/dev/null; then
+if command -v docker &>/dev/null && docker info &>/dev/null; then
     docker compose up -d
     docker compose exec -it nginx bash /app/init-project.sh
 else
-    echo "${RED}Error: Docker is not installed. Cannot start containers.${RESET}" >&2
+    echo -e "${RED}Error: Docker is not installed or not running.${RESET}" >&2
     exit 1
 fi
 
