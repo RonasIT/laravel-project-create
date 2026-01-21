@@ -29,26 +29,29 @@ download_file "docker-compose.yml" "https://raw.githubusercontent.com/RonasIT/la
 download_file "Dockerfile" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/Dockerfile" false
 download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh" true
 
-if command -v git &>/dev/null && git rev-parse --is-inside-work-tree &>/dev/null; then
-    git remote get-url origin &>/dev/null && git remote remove origin
+prompt_yes_no() {
+    local message=$1
+    local answer
+    read -rp "$message [Y/N]: " answer
+    answer=${answer,,}
+    [[ "$answer" == "y" || "$answer" == "yes" ]]
+}
 
-    new_commit=$(git commit-tree HEAD^{tree} -m "chore: initial commit")
-    git reset --soft "$new_commit"
+init_git_repo() {
+    git add . &>/dev/null
+    git commit -m "chore: initial commit" &>/dev/null
+}
 
-    git commit --amend -m "chore: initial commit" &>/dev/null
+is_valid_ssh_url() {
+    [[ "$1" =~ ^git@[^:]+:[^/]+/.+\.git$ ]]
+}
 
-    read -rp "Do you want to add a remote Git repository? [Y/N]: " add_remote
-    add_remote=${add_remote,,}
+is_repo_accessible() {
+    git ls-remote "$1" &>/dev/null
+}
 
-    if [[ "$add_remote" == "y" || "$add_remote" == "yes" ]]; then
-        is_valid_ssh_url() {
-            [[ "$1" =~ ^git@[^:]+:[^/]+/.+\.git$ ]]
-        }
-
-        is_repo_accessible() {
-            git ls-remote "$1" &>/dev/null
-        }
-
+prompt_and_add_git_remote() {
+    if prompt_yes_no "Do you want to add a remote Git repository?"; then
         while true; do
             echo
             read -rp "Enter the SSH Git repository URL of the project: " repo_url
@@ -67,6 +70,28 @@ if command -v git &>/dev/null && git rev-parse --is-inside-work-tree &>/dev/null
             echo "Added new remote 'origin' $repo_url"
             break
         done
+    fi
+}
+
+if command -v git &>/dev/null; then
+    if git rev-parse --is-inside-work-tree &>/dev/null; then
+        git remote get-url origin &>/dev/null && git remote remove origin
+
+        if git rev-parse --verify HEAD &>/dev/null; then
+            new_commit=$(git commit-tree HEAD^{tree} -m "chore: initial commit")
+            git reset --soft "$new_commit"
+            git commit --amend -m "chore: initial commit" &>/dev/null
+        else
+            init_git_repo
+        fi
+
+        prompt_and_add_git_remote
+    else
+        if prompt_yes_no "Do you want to initialize a Git repository?"; then
+            git init &>/dev/null
+            init_git_repo
+            prompt_and_add_git_remote
+        fi
     fi
 fi
 
