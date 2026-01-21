@@ -84,7 +84,7 @@ if command -v git &>/dev/null; then
 
         prompt_and_add_git_remote
     else
-        if prompt_yes_no "Do you want to init Git repository?"; then
+        if prompt_yes_no "Do you want to initialize a Git repository?"; then
             git init &>/dev/null
             init_git_repo
             prompt_and_add_git_remote
