@@ -33,8 +33,13 @@ prompt_yes_no() {
     local message=$1
     local answer
     read -rp "$message [Y/N]: " answer
-    answer=${answer,,}
-    [[ "$answer" == "y" || "$answer" == "yes" ]]
+    answer=$(echo "$answer" | tr '[:upper:]' '[:lower:]')
+
+    if [ "$answer" = "y" ] || [ "$answer" = "yes" ]; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 init_git_repo() {
