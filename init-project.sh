@@ -3,6 +3,9 @@ set -e
 
 APP_DIR="/app"
 
+# --------------------------------------------------
+# Initialize Laravel project if it does not exist.
+# --------------------------------------------------
 if [ ! -f "$APP_DIR/artisan" ]; then
     TEMP_DIR="$APP_DIR/laravel_temp"
     composer create-project laravel/laravel "$TEMP_DIR" --prefer-dist
@@ -27,7 +30,11 @@ if [ ! -f "$APP_DIR/artisan" ]; then
     php "$APP_DIR/artisan" migrate
 fi
 
+# --------------------------------------------------
+# Generate Docker entrypoint script.
+# --------------------------------------------------
 ENTRYPOINT_FILE="$APP_DIR/docker/entrypoint.sh"
+
 cat > "$ENTRYPOINT_FILE" <<'EOF'
 #!/bin/bash
 composer install
@@ -44,8 +51,10 @@ php artisan migrate --force
 chmod -R 777 storage
 EOF
 
+# Make entrypoint script executable
 chmod +x "$ENTRYPOINT_FILE"
 
 echo "Setup complete!"
 
+# Remove this script after execution
 rm -- "$(realpath "${BASH_SOURCE[0]}")"

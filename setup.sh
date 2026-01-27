@@ -1,11 +1,22 @@
 #!/bin/bash
 set -e
 
+# Terminal red color for error messages
 RED='\033[1;31m'
+
+# Reset terminal color to default
 RESET='\033[0m'
 
 mkdir -p docker
 
+# --------------------------------------------------
+# Download a file if it does not exist.
+#
+# Arguments:
+#   $1 - Output file path
+#   $2 - Source URL
+#   $3 - Make file executable ("true" or "false", optional)
+# --------------------------------------------------
 download_file() {
     local output=$1
     local url=$2
@@ -24,37 +35,50 @@ download_file() {
     fi
 }
 
-download_file "init-project.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/init-project.sh" true
-download_file "docker-compose.yml" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker-compose.yml" false
-download_file "Dockerfile" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/Dockerfile" false
-download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh" true
-
+# --------------------------------------------------
+# Prompt the user with a Yes/No question.
+#
+# Returns:
+#   0 - yes ("y" or "yes")
+#   1 - no or any other input
+#
+# Arguments:
+#   $1 - Prompt message
+# --------------------------------------------------
 prompt_yes_no() {
     local message=$1
     local answer
     read -rp "$message [Y/N]: " answer
-    answer=$(echo "$answer" | tr '[:upper:]' '[:lower:]')
 
-    if [ "$answer" = "y" ] || [ "$answer" = "yes" ]; then
-        return 0
-    else
-        return 1
-    fi
+    answer=$(printf '%s' "$answer" | tr '[:upper:]' '[:lower:]')
+    [[ "$answer" == "y" || "$answer" == "yes" ]]
 }
 
+# --------------------------------------------------
+# Create initial Git commit for the repository.
+# --------------------------------------------------
 init_git_repo() {
     git add . &>/dev/null
     git commit -m "chore: initial commit" &>/dev/null
 }
 
+# --------------------------------------------------
+# Validate SSH Git repository URL.
+# --------------------------------------------------
 is_valid_ssh_url() {
     [[ "$1" =~ ^git@[^:]+:[^/]+/.+\.git$ ]]
 }
 
+# --------------------------------------------------
+# Checks whether a Git repository is accessible via SSH.
+# --------------------------------------------------
 is_repo_accessible() {
     git ls-remote "$1" &>/dev/null
 }
 
+# --------------------------------------------------
+# Prompt user and add Git remote repository if confirmed.
+# --------------------------------------------------
 prompt_and_add_git_remote() {
     if prompt_yes_no "Do you want to add a remote Git repository?"; then
         while true; do
@@ -78,10 +102,24 @@ prompt_and_add_git_remote() {
     fi
 }
 
+# ==================================================
+# Main script logic
+# ==================================================
+
+# Download required files
+download_file "init-project.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/init-project.sh" true
+download_file "docker-compose.yml" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker-compose.yml" false
+download_file "Dockerfile" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/Dockerfile" false
+download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh" true
+
+# Git initialization and configuration
 if command -v git &>/dev/null; then
+    # Check if we are inside a Git repository
     if git rev-parse --is-inside-work-tree &>/dev/null; then
+        # Remove existing origin remote if present
         git remote get-url origin &>/dev/null && git remote remove origin
 
+        # Rewrite initial commit if the repository already has commits
         if git rev-parse --verify HEAD &>/dev/null; then
             new_commit=$(git commit-tree HEAD^{tree} -m "chore: initial commit")
             git reset --soft "$new_commit"
@@ -92,6 +130,7 @@ if command -v git &>/dev/null; then
 
         prompt_and_add_git_remote
     else
+        # Offer to initialize a new Git repository
         if prompt_yes_no "Do you want to initialize a Git repository?"; then
             git init &>/dev/null
             init_git_repo
@@ -100,6 +139,7 @@ if command -v git &>/dev/null; then
     fi
 fi
 
+# Docker startup and project initialization
 if command -v docker &>/dev/null && docker info &>/dev/null; then
     docker compose up -d
     docker compose exec -it nginx bash /app/init-project.sh
@@ -108,4 +148,5 @@ else
     exit 1
 fi
 
+# Remove this script after successful execution
 rm -- "$(realpath "${BASH_SOURCE[0]}")"
