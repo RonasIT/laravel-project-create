@@ -151,6 +151,7 @@ fi
 
 download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh" true true
 
+echo
 echo "Setup complete!"
 
 # Remove this script after successful execution
