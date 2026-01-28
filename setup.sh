@@ -14,13 +14,15 @@ mkdir -p docker
 #   $1 - Output file path
 #   $2 - Source URL
 #   $3 - Make file executable ("true" or "false", optional)
+#   $4 - Overwrite if file exists ("true" or "false", optional)
 # --------------------------------------------------
 download_file() {
     local output=$1
     local url=$2
     local make_executable=${3:-false}
+    local overwrite=${4:-false}
 
-    if [ -f "$output" ]; then
+    if [ -f "$output" ] && [ "$overwrite" != "true" ]; then
         return
     fi
 
@@ -109,6 +111,8 @@ download_file "init-project.sh" "https://raw.githubusercontent.com/RonasIT/larav
 download_file "docker-compose.yml" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker-compose.yml" false
 download_file "Dockerfile" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/Dockerfile" false
 
+mkdir -p docker && touch docker/entrypoint.sh && chmod +x docker/entrypoint.sh
+
 # Git initialization and configuration
 if command -v git &>/dev/null; then
     # Check if we are inside a Git repository
@@ -139,14 +143,13 @@ fi
 # Docker startup and project initialization
 if command -v docker &>/dev/null && docker info &>/dev/null; then
     docker compose up -d
-
-    download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh" true
-
     docker compose exec -it nginx bash /app/init-project.sh
 else
     echo "${RED_COLOR}Error: Docker is not installed, not running, or permission denied.${DEFAULT_COLOR}" >&2
     exit 1
 fi
+
+download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh" true true
 
 # Remove this script after successful execution
 rm -- "$(realpath "${BASH_SOURCE[0]}")"
