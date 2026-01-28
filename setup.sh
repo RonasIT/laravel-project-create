@@ -1,11 +1,9 @@
 #!/bin/bash
 set -e
 
-# Terminal red color for error messages
-RED='\033[1;31m'
-
-# Reset terminal color to default
-RESET='\033[0m'
+# Terminal colors
+RED_COLOR='\033[1;31m'
+DEFAULT_COLOR='\033[0m'
 
 mkdir -p docker
 
@@ -31,24 +29,24 @@ download_file() {
             chmod +x "$output"
         fi
     else
-        echo "${RED}Failed to download $output${RESET}" >&2
+        echo "${RED_COLOR}Failed to download $output${DEFAULT_COLOR}" >&2
     fi
 }
 
 # --------------------------------------------------
 # Prompt the user with a Yes/No question.
 #
+# Arguments:
+#   $1 - Prompt message
+#
 # Returns:
 #   0 - yes ("y" or "yes")
 #   1 - no or any other input
-#
-# Arguments:
-#   $1 - Prompt message
 # --------------------------------------------------
 prompt_yes_no() {
     local message=$1
     local answer
-    read -rp "$message [Y/N]: " answer
+    read -rp "$message [y/N]: " answer
 
     answer=$(printf '%s' "$answer" | tr '[:upper:]' '[:lower:]')
     [[ "$answer" == "y" || "$answer" == "yes" ]]
@@ -110,7 +108,6 @@ prompt_and_add_git_remote() {
 download_file "init-project.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/init-project.sh" true
 download_file "docker-compose.yml" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker-compose.yml" false
 download_file "Dockerfile" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/Dockerfile" false
-download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh" true
 
 # Git initialization and configuration
 if command -v git &>/dev/null; then
@@ -142,9 +139,12 @@ fi
 # Docker startup and project initialization
 if command -v docker &>/dev/null && docker info &>/dev/null; then
     docker compose up -d
+
+    download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh" true
+
     docker compose exec -it nginx bash /app/init-project.sh
 else
-    echo "${RED}Error: Docker is not installed, not running, or permission denied.${RESET}" >&2
+    echo "${RED_COLOR}Error: Docker is not installed, not running, or permission denied.${DEFAULT_COLOR}" >&2
     exit 1
 fi
 

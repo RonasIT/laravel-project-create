@@ -30,30 +30,6 @@ if [ ! -f "$APP_DIR/artisan" ]; then
     php "$APP_DIR/artisan" migrate
 fi
 
-# --------------------------------------------------
-# Generate Docker entrypoint script.
-# --------------------------------------------------
-ENTRYPOINT_FILE="$APP_DIR/docker/entrypoint.sh"
-
-cat > "$ENTRYPOINT_FILE" <<'EOF'
-#!/bin/bash
-composer install
-
-if [[ -f .env ]]; then
-  echo ".env already exists"
-else
-  cp .env.example .env
-  php artisan key:generate
-  php artisan jwt:secret
-fi
-
-php artisan migrate --force
-chmod -R 777 storage
-EOF
-
-# Make entrypoint script executable
-chmod +x "$ENTRYPOINT_FILE"
-
 echo "Setup complete!"
 
 # Remove this script after execution
