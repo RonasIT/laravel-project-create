@@ -30,7 +30,5 @@ if [ ! -f "$APP_DIR/artisan" ]; then
     php "$APP_DIR/artisan" migrate
 fi
 
-echo "Setup complete!"
-
 # Remove this script after execution
 rm -- "$(realpath "${BASH_SOURCE[0]}")"
