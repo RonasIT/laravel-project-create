@@ -1,17 +1,28 @@
 #!/bin/bash
 set -e
 
-RED='\033[1;31m'
-RESET='\033[0m'
+# Terminal colors
+RED_COLOR='\033[1;31m'
+DEFAULT_COLOR='\033[0m'
 
 mkdir -p docker
 
+# --------------------------------------------------
+# Download a file if it does not exist.
+#
+# Arguments:
+#   $1 - Output file path
+#   $2 - Source URL
+#   $3 - Make file executable ("true" or "false", optional)
+#   $4 - Overwrite if file exists ("true" or "false", optional)
+# --------------------------------------------------
 download_file() {
     local output=$1
     local url=$2
     local make_executable=${3:-false}
+    local overwrite=${4:-false}
 
-    if [ -f "$output" ]; then
+    if [ -f "$output" ] && [ "$overwrite" != "true" ]; then
         return
     fi
 
@@ -20,36 +31,54 @@ download_file() {
             chmod +x "$output"
         fi
     else
-        echo "${RED}Failed to download $output${RESET}" >&2
+        echo "${RED_COLOR}Failed to download $output${DEFAULT_COLOR}" >&2
     fi
 }
 
-download_file "init-project.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/init-project.sh" true
-download_file "docker-compose.yml" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker-compose.yml" false
-download_file "Dockerfile" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/Dockerfile" false
-download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh" true
-
+# --------------------------------------------------
+# Prompt the user with a Yes/No question.
+#
+# Arguments:
+#   $1 - Prompt message
+#
+# Returns:
+#   0 - yes ("y" or "yes")
+#   1 - no or any other input
+# --------------------------------------------------
 prompt_yes_no() {
     local message=$1
     local answer
-    read -rp "$message [Y/N]: " answer
-    answer=${answer,,}
+    read -rp "$message [y/N]: " answer
+
+    answer=$(printf '%s' "$answer" | tr '[:upper:]' '[:lower:]')
     [[ "$answer" == "y" || "$answer" == "yes" ]]
 }
 
+# --------------------------------------------------
+# Create initial Git commit for the repository.
+# --------------------------------------------------
 init_git_repo() {
     git add . &>/dev/null
     git commit -m "chore: initial commit" &>/dev/null
 }
 
+# --------------------------------------------------
+# Validate SSH Git repository URL.
+# --------------------------------------------------
 is_valid_ssh_url() {
     [[ "$1" =~ ^git@[^:]+:[^/]+/.+\.git$ ]]
 }
 
+# --------------------------------------------------
+# Checks whether a Git repository is accessible via SSH.
+# --------------------------------------------------
 is_repo_accessible() {
     git ls-remote "$1" &>/dev/null
 }
 
+# --------------------------------------------------
+# Prompt user and add Git remote repository if confirmed.
+# --------------------------------------------------
 prompt_and_add_git_remote() {
     if prompt_yes_no "Do you want to add a remote Git repository?"; then
         while true; do
@@ -73,10 +102,25 @@ prompt_and_add_git_remote() {
     fi
 }
 
+# ==================================================
+# Main script logic
+# ==================================================
+
+# Download required files
+download_file "init-project.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/init-project.sh" true
+download_file "docker-compose.yml" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker-compose.yml" false
+download_file "Dockerfile" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/Dockerfile" false
+
+mkdir -p docker && touch docker/entrypoint.sh && chmod +x docker/entrypoint.sh
+
+# Git initialization and configuration
 if command -v git &>/dev/null; then
+    # Check if we are inside a Git repository
     if git rev-parse --is-inside-work-tree &>/dev/null; then
+        # Remove existing origin remote if present
         git remote get-url origin &>/dev/null && git remote remove origin
 
+        # Rewrite initial commit if the repository already has commits
         if git rev-parse --verify HEAD &>/dev/null; then
             new_commit=$(git commit-tree HEAD^{tree} -m "chore: initial commit")
             git reset --soft "$new_commit"
@@ -87,6 +131,7 @@ if command -v git &>/dev/null; then
 
         prompt_and_add_git_remote
     else
+        # Offer to initialize a new Git repository
         if prompt_yes_no "Do you want to initialize a Git repository?"; then
             git init &>/dev/null
             init_git_repo
@@ -95,12 +140,19 @@ if command -v git &>/dev/null; then
     fi
 fi
 
+# Docker startup and project initialization
 if command -v docker &>/dev/null && docker info &>/dev/null; then
     docker compose up -d
     docker compose exec -it nginx bash /app/init-project.sh
 else
-    echo "${RED}Error: Docker is not installed, not running, or permission denied.${RESET}" >&2
+    echo "${RED_COLOR}Error: Docker is not installed, not running, or permission denied.${DEFAULT_COLOR}" >&2
     exit 1
 fi
 
+download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/docker/entrypoint.sh" true true
+
+echo
+echo "Setup complete!"
+
+# Remove this script after successful execution
 rm -- "$(realpath "${BASH_SOURCE[0]}")"
