@@ -17,8 +17,8 @@ if [ ! -f "$APP_DIR/artisan" ]; then
         cp "$APP_DIR/.env.example" "$APP_DIR/.env"
         php "$APP_DIR/artisan" key:generate
     fi
+
     chmod -R 777 storage
-    chmod 777 database/database.sqlite
     composer require ronasit/laravel-project-initializator --dev
 
     git config --global --add safe.directory "$APP_DIR"
