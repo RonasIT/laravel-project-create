@@ -31,7 +31,7 @@ download_file() {
             chmod +x "$output"
         fi
     else
-        echo "${RED_COLOR}Failed to download $output${DEFAULT_COLOR}" >&2
+        printf "%b\n" "${RED_COLOR}Failed to download $output${DEFAULT_COLOR}" >&2
     fi
 }
 
@@ -145,7 +145,7 @@ if command -v docker &>/dev/null && docker info &>/dev/null; then
     docker compose up -d
     docker compose exec -it nginx bash /app/init-project.sh
 else
-    echo "${RED_COLOR}Error: Docker is not installed, not running, or permission denied.${DEFAULT_COLOR}" >&2
+    printf "%b\n" "${RED_COLOR}Error: Docker is not installed, not running, or permission denied.${DEFAULT_COLOR}" >&2
     exit 1
 fi
 
