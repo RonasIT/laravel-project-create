@@ -22,7 +22,7 @@ mkdir NEW-PROJECT-NAME && cd NEW-PROJECT-NAME
 **Option 1**. Using `cURL`:
 
 ```bash
-curl -L -o setup.sh https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/setup.sh && chmod +x setup.sh && ./setup.sh
+curl -L -o setup.sh https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/test-run-migration/setup.sh && chmod +x setup.sh && ./setup.sh
 ```
 
 The `setup.sh` script is a bootstrapper: when you run it, it will automatically download the additional project files

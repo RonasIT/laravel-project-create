@@ -19,7 +19,7 @@ if [ ! -f "$APP_DIR/artisan" ]; then
     fi
 
     chmod -R 777 storage
-    composer require ronasit/laravel-project-initializator --dev
+    composer require ronasit/laravel-project-initializator:dev-refactor-migration-logic --dev
 
     git config --global --add safe.directory "$APP_DIR"
 
@@ -27,7 +27,6 @@ if [ ! -f "$APP_DIR/artisan" ]; then
     read -p $'\033[32mSet project name:\033[0m ' PROJECT_NAME
 
     php "$APP_DIR/artisan" init "$PROJECT_NAME"
-    php "$APP_DIR/artisan" migrate
 fi
 
 # Remove this script after execution
