@@ -26,12 +26,13 @@ download_file() {
         return
     fi
 
-    if curl -L -o "$output" "$url"; then
+    if curl -fL -o "$output" "$url"; then
         if [ "$make_executable" = "true" ]; then
             chmod +x "$output"
         fi
     else
         printf "%b\n" "${RED_COLOR}Failed to download $output${DEFAULT_COLOR}" >&2
+        exit 1
     fi
 }
 
@@ -122,7 +123,7 @@ if command -v git &>/dev/null; then
 
         # Rewrite initial commit if the repository already has commits
         if git rev-parse --verify HEAD &>/dev/null; then
-            new_commit=$(git commit-tree HEAD^{tree} -m "chore: initial commit")
+            new_commit=$(git commit-tree 'HEAD^{tree}' -m "chore: initial commit")
             git reset --soft "$new_commit"
             git commit --amend -m "chore: initial commit" &>/dev/null
         else
