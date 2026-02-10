@@ -26,12 +26,13 @@ download_file() {
         return
     fi
 
-    if curl -L -o "$output" "$url"; then
+    if curl -fL -o "$output" "$url"; then
         if [ "$make_executable" = "true" ]; then
             chmod +x "$output"
         fi
     else
-        echo "${RED_COLOR}Failed to download $output${DEFAULT_COLOR}" >&2
+        printf "%b\n" "${RED_COLOR}Failed to download $output${DEFAULT_COLOR}" >&2
+        exit 1
     fi
 }
 
@@ -122,7 +123,7 @@ if command -v git &>/dev/null; then
 
         # Rewrite initial commit if the repository already has commits
         if git rev-parse --verify HEAD &>/dev/null; then
-            new_commit=$(git commit-tree HEAD^{tree} -m "chore: initial commit")
+            new_commit=$(git commit-tree 'HEAD^{tree}' -m "chore: initial commit")
             git reset --soft "$new_commit"
             git commit --amend -m "chore: initial commit" &>/dev/null
         else
@@ -145,7 +146,7 @@ if command -v docker &>/dev/null && docker info &>/dev/null; then
     docker compose up -d
     docker compose exec -it nginx bash /app/init-project.sh
 else
-    echo "${RED_COLOR}Error: Docker is not installed, not running, or permission denied.${DEFAULT_COLOR}" >&2
+    printf "%b\n" "${RED_COLOR}Error: Docker is not installed, not running, or permission denied.${DEFAULT_COLOR}" >&2
     exit 1
 fi
 
