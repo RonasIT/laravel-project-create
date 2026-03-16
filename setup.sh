@@ -5,6 +5,18 @@ set -e
 RED_COLOR='\033[1;31m'
 DEFAULT_COLOR='\033[0m'
 
+# Prompt for project directory name
+while true; do
+    read -rp "Enter the project directory name: " project_dir
+    if [ -n "$project_dir" ]; then
+        break
+    fi
+    echo "Directory name cannot be empty."
+done
+
+mkdir -p "$project_dir"
+cd "$project_dir"
+
 mkdir -p docker
 
 # --------------------------------------------------
@@ -116,28 +128,10 @@ mkdir -p docker && touch docker/entrypoint.sh && chmod +x docker/entrypoint.sh
 
 # Git initialization and configuration
 if command -v git &>/dev/null; then
-    # Check if we are inside a Git repository
-    if git rev-parse --is-inside-work-tree &>/dev/null; then
-        # Remove existing origin remote if present
-        git remote get-url origin &>/dev/null && git remote remove origin
-
-        # Rewrite initial commit if the repository already has commits
-        if git rev-parse --verify HEAD &>/dev/null; then
-            new_commit=$(git commit-tree 'HEAD^{tree}' -m "chore: initial commit")
-            git reset --soft "$new_commit"
-            git commit --amend -m "chore: initial commit" &>/dev/null
-        else
-            init_git_repo
-        fi
-
+    if prompt_yes_no "Do you want to initialize a Git repository?"; then
+        git init &>/dev/null
+        init_git_repo
         prompt_and_add_git_remote
-    else
-        # Offer to initialize a new Git repository
-        if prompt_yes_no "Do you want to initialize a Git repository?"; then
-            git init &>/dev/null
-            init_git_repo
-            prompt_and_add_git_remote
-        fi
     fi
 fi
 
