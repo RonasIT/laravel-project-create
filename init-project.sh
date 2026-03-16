@@ -18,7 +18,7 @@ if [ ! -f "$APP_DIR/artisan" ]; then
         php "$APP_DIR/artisan" key:generate
     fi
 
-    chmod -R 775 storage
+    chmod -R 777 storage
     composer require ronasit/laravel-project-initializator --dev
 
     git config --global --add safe.directory "$APP_DIR"
