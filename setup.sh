@@ -153,7 +153,5 @@ fi
 
 download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/entrypoint.sh" true true
 
-rm -f "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/entrypoint.sh"
-
 echo
 printf "%b\n" "\033[1;32mSetup complete!\033[0m"
