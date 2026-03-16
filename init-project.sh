@@ -19,7 +19,7 @@ if [ ! -f "$APP_DIR/artisan" ]; then
     fi
 
     chmod -R 777 storage
-    composer require ronasit/laravel-project-initializator --dev
+    composer require ronasit/laravel-project-initializator:dev-refactor-migration-logic --dev
 
     git config --global --add safe.directory "$APP_DIR"
 
