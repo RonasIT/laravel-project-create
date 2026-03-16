@@ -8,10 +8,13 @@ DEFAULT_COLOR='\033[0m'
 # Prompt for project directory name
 while true; do
     read -rp "Enter the project directory name: " project_dir </dev/tty
-    if [ -n "$project_dir" ]; then
+    if [ -z "$project_dir" ]; then
+        echo "Directory name cannot be empty."
+    elif [[ ! "$project_dir" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+        echo "Invalid directory name. Allowed characters: a-z, A-Z, 0-9, -, _."
+    else
         break
     fi
-    echo "Directory name cannot be empty."
 done
 
 mkdir -p "$project_dir"
