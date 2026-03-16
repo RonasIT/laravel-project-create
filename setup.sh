@@ -7,11 +7,12 @@ DEFAULT_COLOR='\033[0m'
 
 # Prompt for project directory name
 while true; do
+    echo
     read -rp "Enter the project directory name: " project_dir </dev/tty
     if [ -z "$project_dir" ]; then
-        echo "Directory name cannot be empty."
+        printf "%b\n" "${RED_COLOR}Directory name cannot be empty.${DEFAULT_COLOR}"
     elif [[ ! "$project_dir" =~ ^[a-zA-Z0-9_-]+$ ]]; then
-        echo "Invalid directory name. Allowed characters: a-z, A-Z, 0-9, -, _."
+        printf "%b\n" "${RED_COLOR}Invalid directory name. Allowed characters: a-z, A-Z, 0-9, -, _.${DEFAULT_COLOR}"
     else
         break
     fi
@@ -152,4 +153,4 @@ download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/
 rm -f "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/entrypoint.sh"
 
 echo
-echo "Setup complete!"
+printf "%b\n" "\033[1;32mSetup complete!\033[0m"
