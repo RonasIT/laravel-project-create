@@ -14,6 +14,8 @@ while true; do
     elif [[ ! "$project_dir" =~ ^[a-zA-Z0-9_-]+$ ]]; then
         printf "%b\n" "${RED_COLOR}Invalid directory name. Allowed characters: a-z, A-Z, 0-9, -, _.${DEFAULT_COLOR}"
     else
+        printf "%b\n" "\033[1;32mProject directory: ${project_dir}\033[0m"
+        echo
         break
     fi
 done
@@ -103,17 +105,18 @@ prompt_and_add_git_remote() {
             read -rp "Enter the SSH Git repository URL of the project: " repo_url </dev/tty
 
             if ! is_valid_ssh_url "$repo_url"; then
-                echo "Invalid SSH URL. Example: git@github.com:user/repo.git"
+                printf "%b\n" "${RED_COLOR}Invalid SSH URL. Example: git@github.com:user/repo.git${DEFAULT_COLOR}"
                 continue
             fi
 
             if ! is_repo_accessible "$repo_url"; then
-                echo "Cannot access repository at '$repo_url'. Check URL or SSH keys."
+                printf "%b\n" "${RED_COLOR}Cannot access repository at '$repo_url'. Check URL or SSH keys.${DEFAULT_COLOR}"
                 continue
             fi
 
             git remote add origin "$repo_url"
-            echo "Added new remote 'origin' $repo_url"
+            printf "%b\n" "\033[1;32mAdded new remote 'origin' $repo_url\033[0m"
+            echo
             break
         done
     fi
