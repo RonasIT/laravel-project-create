@@ -24,7 +24,7 @@ if [ ! -f "$APP_DIR/artisan" ]; then
     git config --global --add safe.directory "$APP_DIR"
 
     echo
-    read -p $'\033[32mSet project name:\033[0m ' PROJECT_NAME
+    read -rp $'\033[32mSet project name:\033[0m ' PROJECT_NAME
 
     php "$APP_DIR/artisan" init "$PROJECT_NAME"
 fi
