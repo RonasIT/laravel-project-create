@@ -7,7 +7,7 @@ DEFAULT_COLOR='\033[0m'
 
 # Prompt for project directory name
 while true; do
-    read -rp "Enter the project directory name: " project_dir
+    read -rp "Enter the project directory name: " project_dir </dev/tty
     if [ -n "$project_dir" ]; then
         break
     fi
@@ -61,7 +61,7 @@ download_file() {
 prompt_yes_no() {
     local message=$1
     local answer
-    read -rp "$message [y/N]: " answer
+    read -rp "$message [y/N]: " answer </dev/tty
 
     answer=$(printf '%s' "$answer" | tr '[:upper:]' '[:lower:]')
     [[ "$answer" == "y" || "$answer" == "yes" ]]
@@ -96,7 +96,7 @@ prompt_and_add_git_remote() {
     if prompt_yes_no "Do you want to add a remote Git repository?"; then
         while true; do
             echo
-            read -rp "Enter the SSH Git repository URL of the project: " repo_url
+            read -rp "Enter the SSH Git repository URL of the project: " repo_url </dev/tty
 
             if ! is_valid_ssh_url "$repo_url"; then
                 echo "Invalid SSH URL. Example: git@github.com:user/repo.git"
@@ -150,6 +150,3 @@ rm -f "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/entrypoint.sh"
 
 echo
 echo "Setup complete!"
-
-# Remove this script after successful execution
-rm -- "$(realpath "${BASH_SOURCE[0]}")"
