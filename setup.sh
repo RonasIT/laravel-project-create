@@ -11,8 +11,8 @@ while true; do
     read -rp "Enter the project directory name: " project_dir </dev/tty
     if [ -z "$project_dir" ]; then
         printf "%b\n" "${RED_COLOR}Directory name cannot be empty.${DEFAULT_COLOR}"
-    elif [[ ! "$project_dir" =~ ^[a-zA-Z0-9_-]+$ ]]; then
-        printf "%b\n" "${RED_COLOR}Invalid directory name. Allowed characters: a-z, A-Z, 0-9, -, _.${DEFAULT_COLOR}"
+    elif [[ ! "$project_dir" =~ ^[a-zA-Z0-9\ _-]+$ ]]; then
+        printf "%b\n" "${RED_COLOR}Invalid directory name. Allowed characters: a-z, A-Z, 0-9, space, -, _.${DEFAULT_COLOR}"
     else
         printf "%b\n" "\033[1;32mProject directory: ${project_dir}\033[0m"
         echo
