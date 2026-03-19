@@ -13,10 +13,6 @@ if [ ! -f "$APP_DIR/artisan" ]; then
     cp -r "$TEMP_DIR"/. "$APP_DIR"/
     rm -rf "$TEMP_DIR"
 
-    if [ ! -f "$APP_DIR/.env" ]; then
-        cp "$APP_DIR/.env.example" "$APP_DIR/.env"
-    fi
-
     chmod -R 777 storage
     composer require ronasit/laravel-project-initializator --dev
 
