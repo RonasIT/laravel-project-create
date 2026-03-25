@@ -44,8 +44,6 @@ services:
 
   redis:
     image: redis:8.6
-    environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
     ports:
         - 6379:6379
 
