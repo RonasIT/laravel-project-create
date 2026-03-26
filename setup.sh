@@ -3,7 +3,27 @@ set -e
 
 # Terminal colors
 RED_COLOR='\033[1;31m'
+GREEN_COLOR='\033[1;32m'
 DEFAULT_COLOR='\033[0m'
+
+# --------------------------------------------------
+# Prompt the user with a Yes/No question.
+#
+# Arguments:
+#   $1 - Prompt message
+#
+# Returns:
+#   0 - yes ("y" or "yes")
+#   1 - no or any other input
+# --------------------------------------------------
+prompt_yes_no() {
+    local message=$1
+    local answer
+    read -rp "$message [y/N]: " answer </dev/tty
+
+    answer=$(printf '%s' "$answer" | tr '[:upper:]' '[:lower:]')
+    [[ "$answer" == "y" || "$answer" == "yes" ]]
+}
 
 # Prompt for project directory name
 while true; do
@@ -14,16 +34,22 @@ while true; do
     elif [[ ! "$project_dir" =~ ^[a-zA-Z0-9\ _-]+$ ]]; then
         printf "%b\n" "${RED_COLOR}Invalid directory name. Allowed characters: a-z, A-Z, 0-9, space, -, _.${DEFAULT_COLOR}"
     else
-        printf "%b\n" "\033[1;32mProject directory: ${project_dir}\033[0m"
+        printf "%b\n" "${GREEN_COLOR}Project directory: ${project_dir}${DEFAULT_COLOR}"
         echo
         break
     fi
 done
 
+# If the project directory already exists and is not empty, prompt before continuing.
+if [ -d "$project_dir" ] && [ -n "$(find "$project_dir" -maxdepth 1 -mindepth 1 2>/dev/null | head -1)" ]; then
+    if ! prompt_yes_no "Directory '$project_dir' already exists and is not empty. Continue and potentially overwrite existing files?"; then
+        printf "%b\n" "${RED_COLOR}Aborting to avoid modifying existing directory.${DEFAULT_COLOR}"
+        exit 1
+    fi
+fi
+
 mkdir -p "$project_dir"
 cd "$project_dir"
-
-mkdir -p docker
 
 # --------------------------------------------------
 # Download a file if it does not exist.
@@ -54,24 +80,6 @@ download_file() {
     fi
 }
 
-# --------------------------------------------------
-# Prompt the user with a Yes/No question.
-#
-# Arguments:
-#   $1 - Prompt message
-#
-# Returns:
-#   0 - yes ("y" or "yes")
-#   1 - no or any other input
-# --------------------------------------------------
-prompt_yes_no() {
-    local message=$1
-    local answer
-    read -rp "$message [y/N]: " answer </dev/tty
-
-    answer=$(printf '%s' "$answer" | tr '[:upper:]' '[:lower:]')
-    [[ "$answer" == "y" || "$answer" == "yes" ]]
-}
 
 # --------------------------------------------------
 # Create initial Git commit for the repository.
@@ -115,7 +123,7 @@ prompt_and_add_git_remote() {
             fi
 
             git remote add origin "$repo_url"
-            printf "%b\n" "\033[1;32mAdded new remote 'origin' $repo_url\033[0m"
+            printf "%b\n" "${GREEN_COLOR}Added new remote 'origin' $repo_url${DEFAULT_COLOR}"
             echo
             break
         done
@@ -154,4 +162,4 @@ fi
 download_file "docker/entrypoint.sh" "https://raw.githubusercontent.com/RonasIT/laravel-project-create/refs/heads/main/entrypoint.sh" true true
 
 echo
-printf "%b\n" "\033[1;32mSetup complete!\033[0m"
+printf "%b\n" "${GREEN_COLOR}Setup complete!${DEFAULT_COLOR}"
