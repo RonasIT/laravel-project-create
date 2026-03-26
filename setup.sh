@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+# Require /dev/tty for interactive prompts (supports both ./setup.sh and curl | bash)
+if [ ! -e /dev/tty ]; then
+    echo "Error: This script requires an interactive terminal (/dev/tty not available)." >&2
+    exit 1
+fi
+
 # Terminal colors
 RED_COLOR='\033[1;31m'
 GREEN_COLOR='\033[1;32m'
