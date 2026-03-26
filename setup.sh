@@ -48,8 +48,8 @@ if [ -d "$project_dir" ] && [ -n "$(find "$project_dir" -maxdepth 1 -mindepth 1 
     fi
 fi
 
-mkdir -p "$project_dir"
-cd "$project_dir"
+mkdir -p -- "$project_dir"
+cd -- "$project_dir"
 
 # --------------------------------------------------
 # Download a file if it does not exist.
