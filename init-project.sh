@@ -13,7 +13,7 @@ if [ ! -f "$APP_DIR/artisan" ]; then
     cp -r "$TEMP_DIR"/. "$APP_DIR"/
     rm -rf "$TEMP_DIR"
 
-    chmod -R 777 storage
+    chmod -R 777 "$APP_DIR/storage"
     composer require ronasit/laravel-project-initializator --dev
 
     git config --global --add safe.directory "$APP_DIR"
