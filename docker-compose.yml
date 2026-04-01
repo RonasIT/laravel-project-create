@@ -41,6 +41,7 @@ services:
       - 5433:5432
     environment:
       ALLOW_EMPTY_PASSWORD: "yes"
+      POSTGRESQL_FSYNC: "off"
     volumes:
       - .:/app
 
