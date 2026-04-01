@@ -23,6 +23,8 @@ services:
       XDEBUG_DISCOVER_CLIENT_HOST: 0
       XDEBUG_CLIENT_PORT: 9000
       XDEBUG_CLIENT_HOST: host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   pgsql:
     image: bitnamilegacy/postgresql:17.4.0
