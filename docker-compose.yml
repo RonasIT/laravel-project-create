@@ -31,7 +31,7 @@ services:
     ports:
       - 5432:5432
     environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
     volumes:
       - .:/app
 
@@ -40,7 +40,7 @@ services:
     ports:
       - 5433:5432
     environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
       POSTGRESQL_FSYNC: "off"
     volumes:
       - .:/app
