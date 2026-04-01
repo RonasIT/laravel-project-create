@@ -27,28 +27,26 @@ services:
       - "host.docker.internal:host-gateway"
 
   pgsql:
-    image: bitnamilegacy/postgresql:17.4.0
+    image: postgres:18.3
     ports:
       - 5432:5432
     environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
     volumes:
       - .:/app
 
   pgsql_test:
-    image: bitnamilegacy/postgresql:17.4.0
+    image: postgres:18.3
     ports:
       - 5433:5432
     environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
       POSTGRESQL_FSYNC: "off"
     volumes:
       - .:/app
 
   redis:
-    image: bitnamilegacy/redis:7.4
-    environment:
-      ALLOW_EMPTY_PASSWORD: "yes"
+    image: redis:8.6
     ports:
         - 6379:6379
 
