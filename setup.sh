@@ -148,7 +148,7 @@ download_file "Dockerfile" "https://raw.githubusercontent.com/RonasIT/laravel-pr
 mkdir -p docker && touch docker/entrypoint.sh && chmod +x docker/entrypoint.sh
 
 # Git initialization and configuration
-if command -v git &>/dev/null; then
+if command -v git &>/dev/null && ! git rev-parse --is-inside-work-tree &>/dev/null; then
     if prompt_yes_no "Do you want to initialize a Git repository?"; then
         git init &>/dev/null
         init_git_repo
