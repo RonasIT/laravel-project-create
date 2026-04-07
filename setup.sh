@@ -158,7 +158,7 @@ fi
 
 # Docker startup and project initialization
 if command -v docker &>/dev/null && docker info &>/dev/null; then
-    if ! docker compose up -d 2> >(while IFS= read -r line; do printf "%b\n" "${RED_COLOR}${line}${DEFAULT_COLOR}" >&2; done); then
+    if ! docker compose up -d 2> >(while IFS= read -r line; do printf "%b%s%b\n" "$RED_COLOR" "$line" "$DEFAULT_COLOR" >&2; done); then
         exit 1
     fi
     docker compose exec -it nginx bash /app/init-project.sh < /dev/tty
