@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Prevent MSYS/Git Bash on Windows from converting Unix paths to Windows paths
+export MSYS_NO_PATHCONV=1
+
 # Require /dev/tty for interactive prompts (supports both ./setup.sh and curl | bash)
 if [ ! -e /dev/tty ]; then
     echo "Error: This script requires an interactive terminal (/dev/tty not available)." >&2
