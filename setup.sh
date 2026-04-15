@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Prevent MSYS/Git Bash on Windows from converting Unix paths to Windows paths
+export MSYS_NO_PATHCONV=1
+
 # Require /dev/tty for interactive prompts (supports both ./setup.sh and curl | bash)
 if [ ! -e /dev/tty ]; then
     echo "Error: This script requires an interactive terminal (/dev/tty not available)." >&2
@@ -148,7 +151,7 @@ download_file "Dockerfile" "https://raw.githubusercontent.com/RonasIT/laravel-pr
 mkdir -p docker && touch docker/entrypoint.sh && chmod +x docker/entrypoint.sh
 
 # Git initialization and configuration
-if command -v git &>/dev/null; then
+if command -v git &>/dev/null && ! git rev-parse --is-inside-work-tree &>/dev/null; then
     if prompt_yes_no "Do you want to initialize a Git repository?"; then
         git init &>/dev/null
         init_git_repo
@@ -158,7 +161,9 @@ fi
 
 # Docker startup and project initialization
 if command -v docker &>/dev/null && docker info &>/dev/null; then
-    docker compose up -d
+    if ! docker compose up -d 2> >(while IFS= read -r line; do printf "%b%s%b\n" "$RED_COLOR" "$line" "$DEFAULT_COLOR" >&2; done); then
+        exit 1
+    fi
     docker compose exec -it nginx bash /app/init-project.sh < /dev/tty
 else
     printf "%b\n" "${RED_COLOR}Error: Docker is not installed, not running, or permission denied.${DEFAULT_COLOR}" >&2
