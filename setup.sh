@@ -166,7 +166,7 @@ if command -v docker &>/dev/null && docker info &>/dev/null; then
     if ! docker compose up -d 2> >(while IFS= read -r line; do printf "%b%s%b\n" "$RED_COLOR" "$line" "$DEFAULT_COLOR" >&2; done); then
         exit 1
     fi
-    docker compose exec -it nginx bash /app/init-project.sh < /dev/tty
+    docker compose exec -it -e PROJECT_NAME="$project_dir" nginx bash /app/init-project.sh < /dev/tty
 else
     printf "%b\n" "${RED_COLOR}Error: Docker is not installed, not running, or permission denied.${DEFAULT_COLOR}" >&2
     exit 1
