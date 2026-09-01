@@ -8,6 +8,8 @@ APP_DIR="/app"
 # --------------------------------------------------
 if [ ! -f "$APP_DIR/artisan" ]; then
     TEMP_DIR="$APP_DIR/laravel_temp"
+    trap 'rm -rf "$TEMP_DIR"' EXIT
+    rm -rf "$TEMP_DIR"
     composer create-project laravel/laravel "$TEMP_DIR" --prefer-dist
 
     cp -r "$TEMP_DIR"/. "$APP_DIR"/
