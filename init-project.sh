@@ -16,7 +16,7 @@ if [ ! -f "$APP_DIR/artisan" ]; then
     rm -rf "$TEMP_DIR"
 
     chmod -R 777 "$APP_DIR/storage"
-    composer require ronasit/laravel-project-initializator --dev
+    composer require ronasit/laravel-project-initializator --dev -W
 
     git config --global --add safe.directory "$APP_DIR"
 
