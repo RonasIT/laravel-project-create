@@ -6,7 +6,6 @@ if [[ -f .env ]]; then
 else
   cp .env.example .env
   php artisan key:generate
-  php artisan jwt:secret
 fi
 
 php artisan migrate --force
