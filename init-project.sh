@@ -23,7 +23,6 @@ if [ ! -f "$APP_DIR/artisan" ]; then
     composer require ronasit/laravel-project-initializator --dev -W
     php artisan init "$PROJECT_NAME"
 
-    rm -f "$TEMP_DIR/.git"
     chmod -R 777 "$TEMP_DIR/storage"
 
     shopt -s dotglob nullglob
@@ -40,7 +39,6 @@ if [ ! -f "$APP_DIR/artisan" ]; then
     mv "$TEMP_DIR/artisan" "$APP_DIR"/
 
     cd "$APP_DIR"
-    rm -rf "$TEMP_DIR"
 fi
 
 # Remove this script after execution
