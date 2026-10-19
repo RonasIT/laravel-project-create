@@ -51,7 +51,7 @@ done
 
 # If the project directory already exists and is not empty, prompt before continuing.
 if [ -d "$project_dir" ] && [ -n "$(find "$project_dir" -maxdepth 1 -mindepth 1 2>/dev/null | head -1)" ]; then
-    if ! prompt_yes_no "Directory '$project_dir' already exists and is not empty. Continue and potentially overwrite existing files?"; then
+    if ! prompt_yes_no "Directory '$project_dir' already exists and is not empty. Continue? Existing files and directories with the same names as in a fresh Laravel project (app, config, tests, etc.) will be replaced."; then
         printf "%b\n" "${RED_COLOR}Aborting to avoid modifying existing directory.${DEFAULT_COLOR}"
         exit 1
     fi
