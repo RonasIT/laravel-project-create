@@ -10,9 +10,11 @@ services:
       - 443:443
     volumes:
       - ./:/app
-    links:
-      - pgsql
-      - pgsql_test
+    depends_on:
+      pgsql:
+        condition: service_healthy
+      pgsql_test:
+        condition: service_started
     environment:
       WEB_DOCUMENT_ROOT: /app/public
       WEB_DOCUMENT_INDEX: index.php
@@ -34,6 +36,11 @@ services:
       POSTGRES_HOST_AUTH_METHOD: "trust"
     volumes:
       - pgsql_data:/var/lib/postgresql
+    healthcheck:
+      test: pg_isready -h localhost -U postgres
+      interval: 2s
+      timeout: 3s
+      retries: 15
 
   pgsql_test:
     image: postgres:18.3
