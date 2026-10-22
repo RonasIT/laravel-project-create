@@ -21,7 +21,6 @@ services:
       REDIS_PORT: "6379"
       XDEBUG_MAX_NESTING_LEVEL: 250
       XDEBUG_PROFILER_ENABLE: 0
-      XDEBUG_MODE: ${XDEBUG_MODE:-off}
       XDEBUG_DISCOVER_CLIENT_HOST: 0
       XDEBUG_CLIENT_HOST: host.docker.internal
     extra_hosts:
