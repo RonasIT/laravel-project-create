@@ -6,8 +6,8 @@ services:
     command: >
       bash -c "chmod +x ./docker/entrypoint.sh && ./docker/entrypoint.sh && cd /opt/docker && supervisord"
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      - "443:443"
     volumes:
       - ./:/app
     depends_on:
@@ -27,7 +27,7 @@ services:
   pgsql:
     image: postgres:18.3
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       POSTGRES_HOST_AUTH_METHOD: "trust"
     volumes:
@@ -42,7 +42,7 @@ services:
     image: postgres:18.3
     command: postgres -c fsync=off -c synchronous_commit=off -c full_page_writes=off
     ports:
-      - 5433:5432
+      - "5433:5432"
     environment:
       POSTGRES_HOST_AUTH_METHOD: "trust"
     tmpfs:
@@ -51,7 +51,7 @@ services:
   redis:
     image: redis:8.6
     ports:
-      - 6379:6379
+      - "6379:6379"
 
   php:
     image: webdevops/php:8.5-alpine
